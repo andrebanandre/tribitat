@@ -116,6 +116,10 @@ export async function getPostsPaginated(
     tag?: string;
     category?: string;
     search?: string;
+    _embed?: string;
+    categories?: number;
+    tags?: number;
+    [key: string]: any;
   }
 ): Promise<WordPressResponse<Post[]>> {
   const query: Record<string, any> = {

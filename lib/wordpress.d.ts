@@ -76,6 +76,12 @@ interface WPEntity {
     categories: number[];
     tags: number[];
     meta: Record<string, unknown>;
+    _embedded?: {
+      'wp:featuredmedia'?: FeaturedMedia[];
+      'wp:term'?: Array<(Category | Tag)[]>;
+      author?: Author[];
+      [key: string]: unknown[];
+    };
   }
   
   export interface Page extends WPEntity {
