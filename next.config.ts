@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig = {
+  // Allow more time for slow external data sources during SSG
+  staticPageGenerationTimeout: 180,
   images: {
     remotePatterns: [
       {

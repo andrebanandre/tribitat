@@ -12,12 +12,16 @@ import type {
   Author,
   FeaturedMedia,
 } from "./wordpress.d";
+import { configureUndiciTimeouts } from "./configure-undici";
 
 const baseUrl = process.env.WORDPRESS_URL;
 
 if (!baseUrl) {
   throw new Error("WORDPRESS_URL environment variable is not defined");
 }
+
+// Increase Undici connect timeout when running in Node (e.g., during build)
+configureUndiciTimeouts();
 
 class WordPressAPIError extends Error {
   constructor(message: string, public status: number, public endpoint: string) {
