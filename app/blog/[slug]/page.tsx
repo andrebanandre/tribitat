@@ -6,12 +6,22 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 import { ShareButtons } from "@/components/share-buttons";
 import { RelatedPosts } from "@/components/related-posts";
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Badge } from "@/components/ui/badge";
+import {
   getPostBySlug,
   getFeaturedMediaById,
   getAuthorById,
   getCategoryById,
   getPostsPaginated,
   getAllPostSlugs,
+  getTagsByPost,
 } from "@/lib/wordpress";
 import type { Post } from "@/lib/wordpress.d";
 import type { Metadata } from "next";
@@ -71,6 +81,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     : null;
   const author = await getAuthorById(post.author);
   const category = await getCategoryById(post.categories[0]);
+  const tags = post.tags.length > 0 ? await getTagsByPost(post.id) : [];
 
   const date = new Date(post.date).toLocaleDateString("en-US", {
     month: "long",
@@ -123,17 +134,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       {/* Article Content */}
       <article className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         {/* Breadcrumb & Meta */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-          <Link href="/" className="hover:text-accent transition-colors">
-            Home
-          </Link>
-          <span>/</span>
-          <Link href="/" className="hover:text-accent transition-colors">
-            Blog
-          </Link>
-          <span>/</span>
-          <span className="text-accent font-medium">{post.title.rendered}</span>
-        </div>
+        <Breadcrumb className="mb-6">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href={`/category/${category.slug}`}>{category.name}</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{post.title.rendered}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
         {/* Title & Description */}
         <header className="mb-8 border-b border-border pb-8">
@@ -167,6 +186,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             />
           )}
         </div>
+
+        {/* Tags */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-8 pt-8 border-t border-border">
+            {tags.map((tag) => (
+              <Badge key={tag.id} variant="secondary" className="text-xs">
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        )}
       </article>
 
       {/* Related Posts */}

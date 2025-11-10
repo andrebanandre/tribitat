@@ -1,12 +1,22 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Moon, Sun, Menu, X } from "lucide-react"
-import { useTheme } from "next-themes"
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { ModeToggle } from "@/components/mode-toggle";
+import { cn } from "@/lib/utils";
 
 export function Header() {
-  const { theme, setTheme } = useTheme()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -15,36 +25,63 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-accent flex items-center justify-center">
-              <span className="text-accent-foreground font-bold text-lg">T</span>
+              <span className="text-accent-foreground font-bold text-lg">
+                T
+              </span>
             </div>
-            <span className="text-xl font-bold text-foreground hidden sm:inline">TRIBITAT</span>
+            <span className="text-xl font-bold text-foreground hidden sm:inline">
+              TRIBITAT
+            </span>
           </div>
 
           {/* Navigation - Desktop */}
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
-              Home
-            </a>
-            <a href="#" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
-              Featured
-            </a>
-            <a href="#" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
-              Categories
-            </a>
-            <a href="#" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
-              About
-            </a>
-          </nav>
+          <NavigationMenu className="hidden md:flex">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href="/"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "cursor-pointer"
+                    )}
+                  >
+                    Home
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href="#featured"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "cursor-pointer"
+                    )}
+                  >
+                    Featured
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href="/category"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "cursor-pointer"
+                    )}
+                  >
+                    Categories
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
 
           {/* Theme Toggle + Mobile Menu */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? <Sun className="h-5 w-5 text-accent" /> : <Moon className="h-5 w-5 text-primary" />}
-            </button>
+            <ModeToggle />
 
             {/* Mobile Menu Button */}
             <button
@@ -52,7 +89,11 @@ export function Header() {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </button>
           </div>
         </div>
@@ -60,21 +101,30 @@ export function Header() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <nav className="md:hidden pb-4 flex flex-col gap-3 border-t border-border pt-4">
-            <a href="#" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
+            <Link
+              href="/"
+              className="text-sm font-medium text-foreground hover:text-accent transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
               Home
-            </a>
-            <a href="#" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
+            </Link>
+            <Link
+              href="#featured"
+              className="text-sm font-medium text-foreground hover:text-accent transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
               Featured
-            </a>
-            <a href="#" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
+            </Link>
+            <Link
+              href="/category"
+              className="text-sm font-medium text-foreground hover:text-accent transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
               Categories
-            </a>
-            <a href="#" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
-              About
-            </a>
+            </Link>
           </nav>
         )}
       </div>
     </header>
-  )
+  );
 }
